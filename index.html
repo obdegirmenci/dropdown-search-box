@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Menu Test</title>
+
+    <style>
+        input {
+            width: 100%;
+            display: block;
+            margin: 8px 0 8px 0;
+            box-sizing: border-box;
+            border: none;
+            padding: 12px;
+            margin-bottom: 32px;
+            color: #fff;
+            background: rgba(18, 47, 89, 0.5);
+            border-bottom: 3px solid transparent;
+            transition: 0.1s ease;
+        }
+
+        input:hover,
+        input:focus {
+            background: rgba(18, 47, 89, 1);
+            outline: 0 none;
+            border-bottom: 3px solid #66cedd;
+        }
+
+        input:focus {
+            box-shadow: 0 0 20px 10px #ff0055;
+        }
+
+        #container {
+            width: 20vw;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .div-lco {
+            background: #cfcfcf;
+            cursor: pointer;
+            font-size: small;
+            transition: 0.1s ease;
+        }
+
+        /*
+        .div-lco:hover {
+            background: #919191;
+        }
+        */
+
+        .div-lco:focus {
+            outline: 0 none;
+            background: #919191;
+            box-shadow: 0 0 20px 10px #ff0055;
+        }
+
+        #first-focus-block, #last-focus-block {
+            outline: 0 none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="a1" style="padding: 20px;">Yoktan ülke var et</button>
+    <button id="a2" style="padding: 20px;">Olanı yok edip var et</button>
+
+    <div id="container">
+        
+        <div id="first-focus-block" tabindex="1"></div>
+        <input id="search" type="text" placeholder="Butona bas veya yaz" autocomplete="off" autofocus tabindex="2">
+        <!-- BURAYA GELECEKLER-->
+        <div id="last-focus-block" tabindex="20"></div>        
+
+    </div>
+    
+    <script src="selector.js"></script>
+    <script>
+
+        /*
+        var responseBackup = ( `
+
+        <div id="cfield1" class="div-lco" tabindex="2"><img id="cflag1" class="img-cf" src="flags/Germany.png"
+                width="32" height="32" alt="operre.com" longdesc="Germany" />
+            <p id="ctext1" class="p-ct">Germany</p>
+        </div>
+        <div id="cfield2" class="div-lco" tabindex="3"><img id="cflag2" class="img-cf" src="flags/Oman.png" width="32"
+                height="32" alt="operre.com" longdesc="Oman" />
+            <p id="ctext2" class="p-ct">Oman</p>
+        </div>
+        <div id="cfield3" class="div-lco" tabindex="4"><img id="cflag3" class="img-cf" src="flags/Romania.png"
+                width="32" height="32" alt="operre.com" longdesc="Romania" />
+            <p id="ctext3" class="p-ct">Romania</p>
+        </div>
+        <div id="cfield4" class="div-lco" tabindex="5"><img id="cflag3" class="img-cf" src="flags/Romania.png"
+                width="32" height="32" alt="operre.com" longdesc="Romania" />
+            <p id="ctext4" class="p-ct">TR</p>
+        </div>
+        <div id="cfield5" class="div-lco" tabindex="6"><img id="cflag3" class="img-cf" src="flags/Romania.png"
+                width="32" height="32" alt="operre.com" longdesc="Romania" />
+            <p id="ctext5" class="p-ct">UK</p>
+        </div>
+
+        ` );
+        */
+       
+        var addCountry = () => {
+            clean();
+            createResponse();
+            countryDataSelection();
+        }
+
+        var replaceCountry = () => {
+            clean(true);
+            createResponse();
+            countryDataSelection();
+        }
+
+        document.getElementById("a1").addEventListener("click", addCountry);
+        document.getElementById("a2").addEventListener("click", replaceCountry);
+        document.getElementById("search").addEventListener("input", replaceCountry);
+
+        var divIndex = 0;
+        function createResponse() { 
+
+            for (i = 0; i < /*1*/ randomInt(1,6) ; i++) {
+                divIndex = divIndex+1;
+                var response = ( `
+                <div id="cfield${divIndex}" class="div-lco" tabindex="${divIndex+1}"><img id="cflag${divIndex}" class="img-cf" src="flags/Germany.png"
+                        width="32" height="32" alt="operre.com" longdesc="Germany" />
+                    <p id="ctext${divIndex}" class="p-ct">BİZİM KÖY ${divIndex}</p>
+                </div>
+                ` );
+                document.getElementById("last-focus-block").insertAdjacentHTML("beforebegin", response );
+            }
+        }
+
+        // Eski düğümleri siler ya da düğümleri günceller
+        function clean(replace) {
+            var list = document.getElementById("container");
+            //var newlist = list.innerHTML;
+
+            var arr = Array.from(list.children);
+            var newlist = arr.slice(2,arr.length-1);
+
+            console.log("//////////ESKİ NODE//////////");
+            console.log(newlist);
+            console.log("/////////////////////////////");
+
+            if (list.childElementCount > 3) {
+                var options = document.querySelectorAll(".div-lco");
+                
+                for (i = 0; i < options.length; i++) {
+                    list.removeChild(options[i]);
+                }
+                
+                if (replace === true) {
+                    newlist.forEach( function(item) { list.insertBefore(item,list.lastElementChild) } );
+                    
+                    // Bunu yapmazsam yenilenmediğinden klavye sırası düzgün çalışmıyor ama input da oraya dahil olduğundan focus gider ayarlarsın sen
+                    list.innerHTML = list.innerHTML;
+                 
+                } else {
+                     console.log("ESKİ NODE GETTÜÜÜÜ") ;
+                }
+                     
+            } else {
+                //alert("yetersiz");
+            }
+        }
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) ) + min;
+        }
+        
+    </script>
+</body>
+
+</html>
